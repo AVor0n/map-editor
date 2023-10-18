@@ -117,6 +117,13 @@
   resolved "https://artifactory.infotecs.ru:443/artifactory/api/npm/npm-registry/@petamoriken/float16/-/float16-3.8.4.tgz#cd3c02a7fe39f10ae3dd24ed33bd082053aadd66"
   integrity sha512-kB+NJ5Br56ZhElKsf0pM7/PQfrDdDVMRz8f0JM6eVOGE+L89z9hwcst9QvWBBnazzuqGTGtPsJNZoQ1JdNiGSQ==
 
+colormap@^2.3.2:
+  version "2.3.2"
+  resolved "https://artifactory.infotecs.ru:443/artifactory/api/npm/npm-registry/colormap/-/colormap-2.3.2.tgz#4422c1178ce563806e265b96782737be85815abf"
+  integrity sha512-jDOjaoEEmA9AgA11B/jCSAvYE95r3wRoAyTf3LEHGiUVlNHJaL1mRkf5AyLSpQBVGfTEPwGEqCIzL+kgr2WgNA==
+  dependencies:
+    lerp "^1.0.3"
+
 earcut@^2.2.3:
   version "2.2.4"
   resolved "https://artifactory.infotecs.ru:443/artifactory/api/npm/npm-registry/earcut/-/earcut-2.2.4.tgz#6d02fd4d68160c114825d06890a92ecaae60343a"
@@ -177,6 +184,11 @@ lerc@^3.0.0:
   version "3.0.0"
   resolved "https://artifactory.infotecs.ru:443/artifactory/api/npm/npm-registry/lerc/-/lerc-3.0.0.tgz#36f36fbd4ba46f0abf4833799fff2e7d6865f5cb"
   integrity sha512-Rm4J/WaHhRa93nCN2mwWDZFoRVF18G1f47C+kvQWyHGEZxFpTUi73p7lMVSAndyxGt6lJ2/CFbOcf9ra5p8aww==
+
+lerp@^1.0.3:
+  version "1.0.3"
+  resolved "https://artifactory.infotecs.ru:443/artifactory/api/npm/npm-registry/lerp/-/lerp-1.0.3.tgz#a18c8968f917896de15ccfcc28d55a6b731e776e"
+  integrity sha512-70Rh4rCkJDvwWiTsyZ1HmJGvnyfFah4m6iTux29XmasRiZPDBpT9Cfa4ai73+uLZxnlKruUS62jj2lb11wURiA==
 
 nanoid@^3.3.6:
   version "3.3.6"
