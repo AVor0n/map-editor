@@ -6,14 +6,15 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import View from 'ol/View';
 import Modify from 'ol/interaction/Modify';
-import Draw from 'ol/interaction/Draw';
 import Snap from 'ol/interaction/Snap';
 import colormap from 'colormap';
 import { getArea } from 'ol/sphere';
-import { Style, Fill, Stroke } from 'ol/style';
+import { Style, Fill, Stroke, Circle } from 'ol/style';
 import OSM from 'ol/source/OSM.js';
 import TileLayer from 'ol/layer/Tile.js';
+import { detectIntersections } from './detectIntersection';
 
+let showIntersect = false;
 const osmSource = new OSM();
 const osmLayer = new TileLayer({
     source: osmSource,
@@ -58,9 +59,21 @@ const onlyBoundsStyle = new Style({
     }),
 });
 
+const intersectionSource = new VectorSource();
+const intersectionLayer = new VectorLayer({
+    source: intersectionSource,
+    style: new Style({
+        image: new Circle({
+            radius: 3,
+            fill: new Fill({ color: '#ff000050' }),
+            stroke: new Stroke({ color: 'red' }),
+        }),
+    }),
+});
+
 const customSource = new VectorSource({
     format: new GeoJSON(),
-    url: './countries.json',
+    url: './map-data (1).json',
 });
 
 const customLayer = new VectorLayer({
@@ -78,15 +91,25 @@ const map = new Map({
 });
 
 const showOsmLayerToggle = document.getElementById('osmToggle');
-showOsmLayerToggle.addEventListener('change', function (e) {
-    const showOsm = e.target.checked;
+showOsmLayerToggle?.addEventListener('change', function (e) {
+    const showOsm = e.target?.checked;
     osmLayer.setVisible(showOsm);
 });
 
 const colorizeToggle = document.getElementById('colorizeToggle');
-colorizeToggle.addEventListener('change', function (e) {
-    const needColors = e.target.checked;
+colorizeToggle?.addEventListener('change', function (e) {
+    const needColors = e.target?.checked;
     customLayer.setStyle(needColors ? colorfulAreasStyle : onlyBoundsStyle);
+});
+
+const intersectionToggle = document.getElementById('intersectionToggle');
+intersectionToggle?.addEventListener('change', function (e) {
+    showIntersect = e.target?.checked;
+    if (showIntersect) {
+        detectIntersections(customSource, intersectionSource);
+    } else {
+        intersectionLayer?.getSource()?.clear();
+    }
 });
 
 const format = new GeoJSON({ featureProjection: 'EPSG:3857' });
@@ -99,6 +122,7 @@ customSource.on('change', function () {
 
 map.addLayer(osmLayer);
 map.addLayer(customLayer);
+map.addLayer(intersectionLayer);
 
 // сохраняет положение карты при перезагрузке окна
 map.addInteraction(new Link());
@@ -109,22 +133,29 @@ map.addInteraction(
         formatConstructors: [GeoJSON],
     }),
 );
+const modify = new Modify({
+    source: customSource,
+});
 // позволяет править линии на карте
-map.addInteraction(
-    new Modify({
-        source: customSource,
-    }),
-);
-// позволяет рисовать новые линии
-map.addInteraction(
-    new Draw({
-        type: 'Polygon',
-        source: customSource,
-    }),
-);
+map.addInteraction(modify);
 // привязывает точки к ближайшей при редактировании, чтоб избежать неточных границ
 map.addInteraction(
     new Snap({
         source: customSource,
     }),
 );
+
+customSource.once('change', function () {
+    if (showIntersect && customSource.getState() === 'ready') {
+        detectIntersections(customSource, intersectionSource);
+    }
+});
+modify.on('modifystart', () => {
+    // Очистка слоя с пересечениями
+    intersectionLayer?.getSource()?.clear();
+});
+modify.on('modifyend', () => {
+    if (showIntersect) {
+        detectIntersections(customSource, intersectionSource);
+    }
+});
