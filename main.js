@@ -8,14 +8,21 @@ import View from 'ol/View';
 import Modify from 'ol/interaction/Modify';
 import Draw from 'ol/interaction/Draw';
 import Snap from 'ol/interaction/Snap';
+import OSM from 'ol/source/OSM.js';
+import TileLayer from 'ol/layer/Tile.js';
 
-const source = new VectorSource({
+const osmSource = new OSM();
+const osmLayer = new TileLayer({
+    source: osmSource,
+});
+
+const customSource = new VectorSource({
     format: new GeoJSON(),
     url: './countries.json',
 });
 
-const layer = new VectorLayer({
-    source,
+const customLayer = new VectorLayer({
+    source: customSource,
 });
 
 const map = new Map({
@@ -27,47 +34,48 @@ const map = new Map({
     }),
 });
 
-const clear = document.getElementById('clear');
-clear.addEventListener('click', function () {
-    source.clear();
+const showOsmLayerToggle = document.getElementById('osmToggle');
+showOsmLayerToggle.addEventListener('change', function (e) {
+    const showOsm = e.target.checked;
+    osmLayer.setVisible(showOsm);
 });
 
 const format = new GeoJSON({ featureProjection: 'EPSG:3857' });
 const download = document.getElementById('download');
-source.on('change', function () {
-    const features = source.getFeatures();
+customSource.on('change', function () {
+    const features = customSource.getFeatures();
     const json = format.writeFeatures(features);
     download.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
 });
 
-
-map.addLayer(layer);
+map.addLayer(osmLayer);
+map.addLayer(customLayer);
 
 // сохраняет положение карты при перезагрузке окна
 map.addInteraction(new Link());
 // позволяет загружать карту через Drag-n-Drop
 map.addInteraction(
     new DragAndDrop({
-        source,
+        source: customSource,
         formatConstructors: [GeoJSON],
     }),
 );
 // позволяет править линии на карте
 map.addInteraction(
     new Modify({
-        source,
+        source: customSource,
     }),
 );
 // позволяет рисовать новые линии
 map.addInteraction(
     new Draw({
         type: 'Polygon',
-        source,
+        source: customSource,
     }),
 );
 // привязывает точки к ближайшей при редактировании, чтоб избежать неточных границ
 map.addInteraction(
     new Snap({
-        source: source,
+        source: customSource,
     }),
 );

@@ -20,20 +20,35 @@
                 position: absolute;
                 top: 1rem;
                 right: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                color: white;
+                padding: 16px;
+                background: grey;
+                border-radius: 8px;
             }
-            #tools a {
-                display: inline-block;
-                padding: 0.5rem;
-                background: white;
+            #download {
+                text-decoration: none;
+                color: black;
+            }
+            .button{
+                border: none;
+                background-color: aliceblue;
+                border-radius: 2px;
                 cursor: pointer;
+                color: black;
+                padding: 2px 8px;
+                font-size: 14px;
             }
         </style>
     </head>
     <body>
         <div id="map-container"></div>
         <div id="tools">
-            <a id="clear">Clear</a>
-            <a id="download" download="map-data.json">Download</a>
+            <div>Use drag-n-drop for upload file</div>
+            <button class="button"><a id="download" download="map-data.json">Download modified file</a></button>
+            <label><input type="checkbox" id="osmToggle" checked />Show OSM</label>
         </div>
         <script src="./main.js" type="module"></script>
     </body>
