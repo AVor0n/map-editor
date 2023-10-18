@@ -1,0 +1,17 @@
+{
+    "devDependencies": {
+        "vite": "^4.4.5"
+    },
+    "name": "map-editor",
+    "private": true,
+    "scripts": {
+        "build": "vite build",
+        "preview": "vite preview",
+        "start": "vite"
+    },
+    "type": "module",
+    "version": "0.0.0",
+    "dependencies": {
+        "ol": "^8.1.0"
+    }
+}
