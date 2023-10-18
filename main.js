@@ -1,3 +1,4 @@
+import DragAndDrop from 'ol/interaction/DragAndDrop';
 import GeoJSON from 'ol/format/GeoJSON';
 import Link from 'ol/interaction/Link';
 import Map from 'ol/Map';
@@ -29,3 +30,10 @@ map.addLayer(layer);
 
 // сохраняет положение карты при перезагрузке окна
 map.addInteraction(new Link());
+// позволяет загружать карту через Drag-n-Drop
+map.addInteraction(
+    new DragAndDrop({
+        source,
+        formatConstructors: [GeoJSON],
+    }),
+);
