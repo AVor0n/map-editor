@@ -5,27 +5,28 @@ import Map from 'ol/Map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import View from 'ol/View';
+import Modify from 'ol/interaction/Modify';
+import Draw from 'ol/interaction/Draw';
+import Snap from 'ol/interaction/Snap';
+
+const source = new VectorSource({
+    format: new GeoJSON(),
+    url: './countries.json',
+});
+
+const layer = new VectorLayer({
+    source,
+});
 
 const map = new Map({
     target: 'map-container',
-    layers: [
-        new VectorLayer({
-            source: new VectorSource({
-                format: new GeoJSON(),
-                url: './countries.json',
-            }),
-        }),
-    ],
+    layers: [],
     view: new View({
         center: [0, 0],
         zoom: 2,
     }),
 });
 
-const source = new VectorSource();
-const layer = new VectorLayer({
-    source,
-});
 map.addLayer(layer);
 
 // сохраняет положение карты при перезагрузке окна
@@ -35,5 +36,24 @@ map.addInteraction(
     new DragAndDrop({
         source,
         formatConstructors: [GeoJSON],
+    }),
+);
+// позволяет править линии на карте
+map.addInteraction(
+    new Modify({
+        source,
+    }),
+);
+// позволяет рисовать новые линии
+map.addInteraction(
+    new Draw({
+        type: 'Polygon',
+        source,
+    }),
+);
+// привязывает точки к ближайшей при редактировании, чтоб избежать неточных границ
+map.addInteraction(
+    new Snap({
+        source: source,
     }),
 );
