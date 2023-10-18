@@ -1,10 +1,11 @@
 import GeoJSON from 'ol/format/GeoJSON';
+import Link from 'ol/interaction/Link';
 import Map from 'ol/Map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import View from 'ol/View';
 
-new Map({
+const map = new Map({
     target: 'map-container',
     layers: [
         new VectorLayer({
@@ -19,3 +20,12 @@ new Map({
         zoom: 2,
     }),
 });
+
+const source = new VectorSource();
+const layer = new VectorLayer({
+    source,
+});
+map.addLayer(layer);
+
+// сохраняет положение карты при перезагрузке окна
+map.addInteraction(new Link());
